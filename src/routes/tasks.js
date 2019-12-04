@@ -23,6 +23,17 @@ router.get('/', (request, response) => {
     response
       .status(200)
       .json(data)
+});
+
+router.get('/:taskId', (request, response) => {
+    const data = {
+      taskId: request.params.taskId,
+      message: `HTTP GET method by ID`
+    }
+  
+    response
+      .status(200)
+      .json(data);
   });
 
 module.exports = router;
