@@ -36,4 +36,27 @@ router.get('/:taskId', (request, response) => {
       .json(data);
   });
 
+
+router.patch('/:taskId', (request, response) => {
+  const data = {
+    taskId: request.params.taskId,
+    message: `adicionado HTTP PATCH by ID`
+  }
+
+  response
+    .status(200)
+    .json(data);
+});
+  
+router.delete('/:taskId', (request, response) => {
+  const data = {
+    taskId: request.params.taskId,
+    message: `adicionado HTTP DELETE by ID`
+  }
+
+  response
+    .status(200)
+    .json(data);
+});
+
 module.exports = router;
