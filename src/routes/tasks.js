@@ -1,64 +1,52 @@
 const express = require('express');
 const router = express.Router();
 
+const TaskService = require('../services/TaskService');
 const checkAuth = require('../middleware/check-auth');
+const notFound = require('../middleware/not-found');
 
-router.post('/', checkAuth, (request, response) => {
- response.status(200).json({
-   message: 'Handling POST requests para pedidios',
-   id: "1",
-   id_do_pedido: "1",
-   id_clinte: "1",
-   nome_recebidor: "Joao",
-   cpf_recebidor: "09812308",
-   recebidor_comprador: true,
-   data: "xx:xx",
-   localizacao: "wwww"
+router.post('/', checkAuth, async (request, response) => {
+  const task = await TaskService.add(request.body);
    
- });
+  response	  
+    .status(201)
+    .json(task);
 });
 
-router.get('/', (request, response) => {
-    const data = {};
-    data.message = `Handling ${request.protocol} ${request.method} para buscar pedidios`;
-    
-    response
-      .status(200)
-      .json(data)
+router.get('/', async (request, response) => {
+  const tasks = await TaskService.getAll();
+  tasks && tasks.length
+  ? response.json(tasks)
+  : response.status(204).end();
+
 });
 
-router.get('/:taskId', (request, response) => {
-    const data = {
-      taskId: request.params.taskId,
-      message: `HTTP GET method by ID`
-    }
-  
-    response
-      .status(200)
-      .json(data);
+router.get('/:taskId', async (request, response) => {
+  const task = await TaskService.getById(request.params.taskId);
+  task
+  ? response.json(task)
+  : notFound(request, response);
+
   });
 
 
-router.patch('/:taskId', (request, response) => {
-  const data = {
-    taskId: request.params.taskId,
-    message: `adicionado HTTP PATCH by ID`
-  }
+  router.patch('/:taskId', async (request, response) => {
+    const updatedTask = await TaskService.update(
+      request.params.taskId,
+      request.body
+      );
+      updatedTask
+      ? response.json(updatedTask)
+      : notFound(request, response);
 
-  response
-    .status(200)
-    .json(data);
 });
   
-router.delete('/:taskId', (request, response) => {
-  const data = {
-    taskId: request.params.taskId,
-    message: `adicionado HTTP DELETE by ID`
-  }
+router.delete('/:taskId', async (request, response) => {
+  const isDeleted = await TaskService.delete(request.params.taskId);
+  isDeleted
+  ? response.end()
+  : notFound(request, response)
 
-  response
-    .status(200)
-    .json(data);
 });
 
 module.exports = router;
