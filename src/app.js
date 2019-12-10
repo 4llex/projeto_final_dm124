@@ -4,7 +4,19 @@ const app = express();
 const tasksRouter = require('./routes/tasks');
 app.use('/api/tasks', tasksRouter);
 
+// Middlewares
+const cors = require('cors');
+const helmet = require('helmet');
+const morgan = require('morgan');
 const notFound = require('./middleware/not-found');
+
+app.use(cors());
+app.use(helmet());
+app.use(morgan('dev'));
+
+
+
+//const notFound = require('./middleware/not-found');
 app.use(notFound);
 
 /* app.use((request, response, next) => {
